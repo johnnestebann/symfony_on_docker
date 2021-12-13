@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine AS symfony-app-common
+FROM php:8.1-fpm-alpine AS symfony-app-common
 
 RUN apk add --no-cache \
 		acl \
@@ -6,6 +6,8 @@ RUN apk add --no-cache \
 		file \
 		gettext \
         openssl \
+        nodejs \
+        yarn \
 		git \
 		gnu-libiconv \
 	;
@@ -28,7 +30,7 @@ RUN set -eux; \
 		zip \
 	; \
 	pecl install \
-		apcu-5.1.20 \
+		apcu-5.1.21 \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
