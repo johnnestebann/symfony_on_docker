@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+echo "-> Installing Dependencies..."
+if ! composer install --no-interaction --optimize-autoloader --no-progress; then
+    echo "-> Error: Failed to install dependencies."
+    exit 1
+fi
+
+echo "-> Migrating Database..."
+if ! php bin/console doctrine:migration:migrate --no-interaction; then
+    echo "Error: Failed to migrate the database."
+    exit 1
+fi
+
+echo "-> Updating Schema..."
+if ! php bin/console doctrine:schema:update --force --no-interaction; then
+    echo "Error: Failed to update the schema."
+    exit 1
+fi
+
+echo "-> Startup finished."

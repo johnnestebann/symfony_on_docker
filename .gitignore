@@ -1,5 +1,5 @@
-docker/logs
-docker/postgres
+infra/*/*/logs
+infra/*/postgres
 .idea/*
 
 ###> symfony/framework-bundle ###

@@ -1,16 +1,33 @@
-FROM php:8.1-fpm-alpine AS symfony-app-common
+ARG PHP_VERSION="8.3-fpm-alpine3.19"
+ARG COMPOSER_VERSION="2.7.2"
+
+FROM composer:${COMPOSER_VERSION} as composer
+
+FROM php:${PHP_VERSION} AS symfony-app-base
+
+ENV NGINX_VERSION="1.24.0-r15"
+ENV SUPERVISOR_VERSION="4.2.5-r4"
+ENV NODE_VERSION="20.12.1-r0"
+ENV YARN_VERSION="1.22.19-r0"
+ENV APCU_VERSION="5.1.23"
+ENV XDEBUG_VERSION="3.3.2"
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apk add --no-cache \
 		acl \
 		fcgi \
 		file \
 		gettext \
-        openssl \
-        nodejs \
-        yarn \
 		git \
 		gnu-libiconv \
+        nginx=${NGINX_VERSION} \
+        nodejs=${NODE_VERSION} \
+        openssl \
+        supervisor=${SUPERVISOR_VERSION} \
+        yarn=${YARN_VERSION} \
 	;
+
+RUN apk add --update linux-headers
 
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
@@ -30,12 +47,14 @@ RUN set -eux; \
 		zip \
 	; \
 	pecl install \
-		apcu-5.1.21 \
+		apcu-$APCU_VERSION \
+        xdebug-$XDEBUG_VERSION \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+        xdebug \
 	; \
 	\
 	runDeps="$( \
@@ -48,16 +67,4 @@ RUN set -eux; \
 	\
 	apk del .build-deps
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-ENV PATH="${PATH}:/root/.composer/vendor/bin"
-
-RUN addgroup -g 1000 symfony_app_group
-
-RUN adduser -u 1000 -G symfony_app_group -h /home/symfony_app_user -D symfony_app_user
-
-USER symfony_app_user
-
-WORKDIR /var/www/app
+COPY --from=composer /usr/bin/composer /usr/bin/composer
