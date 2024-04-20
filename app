@@ -93,7 +93,7 @@ case "$1" in
     up|u)
         docker compose up -d
         ;;
-    stop)
+    stop|d)
         docker compose stop
         ;;
     restart|r)

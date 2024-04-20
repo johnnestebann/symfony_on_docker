@@ -7,8 +7,6 @@ FROM php:${PHP_VERSION} AS symfony-app-base
 
 ENV NGINX_VERSION="1.24.0-r15"
 ENV SUPERVISOR_VERSION="4.2.5-r4"
-ENV NODE_VERSION="20.12.1-r0"
-ENV YARN_VERSION="1.22.19-r0"
 ENV APCU_VERSION="5.1.23"
 ENV XDEBUG_VERSION="3.3.2"
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -21,10 +19,8 @@ RUN apk add --no-cache \
 		git \
 		gnu-libiconv \
         nginx=${NGINX_VERSION} \
-        nodejs=${NODE_VERSION} \
         openssl \
         supervisor=${SUPERVISOR_VERSION} \
-        yarn=${YARN_VERSION} \
 	;
 
 RUN apk add --update linux-headers
