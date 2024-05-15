@@ -25,7 +25,7 @@ fi
 
 if [ "$MACHINE" == "UNKNOWN" ]; then
     echo "${RED}Unsupported operating system [$OSTYPE]."
-    echo "${NC}GEMS supports macOS, Linux, and Windows (WSL2)." >&2
+    echo "${NC}It supports macOS, Linux, and Windows (WSL2)." >&2
     exit 1
 fi
 
